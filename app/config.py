@@ -2,7 +2,6 @@ import os
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    # По умолчанию подключаемся к локальному Postgres
     POSTGRES_USER: str = os.getenv("POSTGRES_USER", "postgres")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
     POSTGRES_HOST: str = os.getenv("POSTGRES_HOST", "localhost")
