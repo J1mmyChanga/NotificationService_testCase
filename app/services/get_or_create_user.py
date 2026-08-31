@@ -1,9 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.models import User
+from app.models import User
 
 
-async def create_user(session: AsyncSession, telegram_id: int) -> tuple[User, bool]:
+async def get_or_create_user(session: AsyncSession, telegram_id: int) -> tuple[User, bool]:
     stmt = select(User).where(User.telegram_id == telegram_id)
     result = await session.execute(stmt)
     user = result.scalar_one_or_none()

@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy import BigInteger, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.db.models.base import Base
+from app.models.base import Base
 
 class User(Base):
     __tablename__ = "users"
@@ -14,5 +14,4 @@ class User(Base):
         default=lambda: datetime.now(timezone.utc)
     )
 
-    # Связь с уведомлениями
     notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
