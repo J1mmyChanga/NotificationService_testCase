@@ -5,7 +5,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.channel.models.deliverychannel import DeliveryChannel
 from app.common.channel.models.channel import ChannelStatus
-from app.common.user.models.user import User
 
 
 class ChannelRepository:

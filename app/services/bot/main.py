@@ -5,6 +5,9 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.client.session.aiohttp import AiohttpSession
 from app.common.config import settings
+from app.common.user.models.user import User
+from app.common.channel.models.deliverychannel import DeliveryChannel
+from app.common.notification.models.notification import Notification
 
 from app.common.user.handlers.create_user_handler import router
 

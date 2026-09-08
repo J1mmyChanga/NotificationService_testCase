@@ -16,7 +16,7 @@ async def cmd_start_handler(message: Message) -> None:
     async with AsyncSessionLocal() as session:
         repository = ChannelRepository(session=session)
         user_repository = UserRepository(session=session)
-        delivery_channel = await repository.get_channel_by_address(str(telegram_id), ChannelStatus.TELEGRAM)
+        delivery_channel = await repository.get_by_address(str(telegram_id), ChannelStatus.TELEGRAM)
     if not delivery_channel:
         user = await user_repository.create()
         new_delivery_channel = await repository.create_delivery_address(user.id, ChannelStatus.TELEGRAM, str(telegram_id))

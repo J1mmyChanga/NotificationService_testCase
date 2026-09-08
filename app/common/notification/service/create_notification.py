@@ -5,7 +5,6 @@ from app.common.channel.models.channel import ChannelStatus
 from app.common.core.logger import logger
 from app.common.notification.models.notification import Notification
 from app.common.notification.repository.repository import NotificationRepository
-from app.common.user.repository.repository import UserRepository
 from app.common.channel.repository.repository import ChannelRepository
 
 
@@ -20,7 +19,7 @@ async def create_notification(
     repository = NotificationRepository(session=session)
     channel_repository = ChannelRepository(session=session)
 
-    delivery_channel = await channel_repository.get_channel_by_address(channel_address, channel)
+    delivery_channel = await channel_repository.get_by_address(channel_address, channel)
 
     if not delivery_channel:
         raise ValueError(f"Delivery channel with channel address={channel_address} is not found")

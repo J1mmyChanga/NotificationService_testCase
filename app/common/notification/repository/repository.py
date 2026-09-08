@@ -3,7 +3,6 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.notification.models.notification import Notification, NotificationStatus
-from app.common.user.models.user import User
 
 
 class NotificationRepository:
@@ -50,7 +49,8 @@ class NotificationRepository:
             scheduled_time=scheduled_time,
             message_text=message_text,
             status=NotificationStatus.PENDING,
-            channel=channel
+            channel=channel,
+            retry_count=0
         )
         self.session.add(notification)
         await self.session.commit()

@@ -4,9 +4,11 @@ import sys
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.common.config import settings
-from app.common.models import Base
+from app.common.models.base import Base
 from app.common.user.models.user import User
+from app.common.channel.models.deliverychannel import DeliveryChannel
 from app.common.notification.models.notification import Notification
+
 
 logging.basicConfig(
     level=logging.INFO,

@@ -4,10 +4,11 @@ import requests
 
 BASE_URL = "http://localhost:8000"
 TELEGRAM_ID = 1150841196
+# TELEGRAM_ID = 796617243
 scheduled_time = (datetime.now(timezone.utc) + timedelta(minutes=1)).isoformat()
 
 payload = {
-    "channel_address": TELEGRAM_ID,
+    "channel_address": str(TELEGRAM_ID),
     "scheduled_time": scheduled_time,
     "message_text": "За любым столом всегда была лишь только черемша",
     "channel": "TELEGRAM"

@@ -1,11 +1,9 @@
 import uuid
-from datetime import datetime, timezone
 from typing import TYPE_CHECKING
-from sqlalchemy import DateTime, ForeignKey, String, UniqueConstraint, Enum as SQLEnum
+from sqlalchemy import ForeignKey, String, UniqueConstraint, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.common.models.base import Base
 from app.common.channel.models.channel import ChannelStatus
-from app.common.user.models.user import User
 
 
 class DeliveryChannel(Base):
@@ -31,5 +29,5 @@ class DeliveryChannel(Base):
     user = relationship("User", back_populates="delivery_channels")
 
     __table_args__ = (
-        UniqueConstraint("user_id", "channel_id", name="uq_user_channel"),
+        UniqueConstraint("user_id", "channel", name="uq_user_channel"),
     )
