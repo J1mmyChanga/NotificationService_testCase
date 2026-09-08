@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from sqlalchemy import String, Text, DateTime, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.common.models.base import Base
+from app.common.channel.models.channel import ChannelStatus
 
 
 class NotificationStatus(str, enum.Enum):
@@ -29,6 +30,10 @@ class Notification(Base):
         index=True,
         nullable=False
     )
-    channel: Mapped[str] = mapped_column(String, nullable=False)
+    channel: Mapped[ChannelStatus] = mapped_column(
+        SQLEnum(ChannelStatus),
+        index=True,
+        nullable=True
+    )
 
     user = relationship("User", back_populates="notifications")

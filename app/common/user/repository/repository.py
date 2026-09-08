@@ -13,15 +13,8 @@ class UserRepository:
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_by_telegram_id(self, telegram_id: int) -> User | None:
-        stmt = select(User).where(User.telegram_id == telegram_id)
-        result = await self.session.execute(stmt)
-        return result.scalar_one_or_none()
-
-    async def create(self, telegram_id: int) -> User:
-        user = User(
-            telegram_id=telegram_id,
-        )
+    async def create(self) -> User:
+        user = User()
         self.session.add(user)
         await self.session.commit()
         await self.session.refresh(user)

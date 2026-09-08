@@ -8,10 +8,10 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
-    telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, index=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc)
     )
 
     notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
+    delivery_channels = relationship("DeliveryChannel", back_populates="user", cascade="all, delete-orphan")

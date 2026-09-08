@@ -7,10 +7,10 @@ TELEGRAM_ID = 1150841196
 scheduled_time = (datetime.now(timezone.utc) + timedelta(minutes=1)).isoformat()
 
 payload = {
-    "user_id": TELEGRAM_ID,
+    "channel_address": TELEGRAM_ID,
     "scheduled_time": scheduled_time,
     "message_text": "За любым столом всегда была лишь только черемша",
-    "channel": "telegram"
+    "channel": "TELEGRAM"
 }
 
 headers = {

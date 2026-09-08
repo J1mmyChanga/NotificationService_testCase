@@ -5,11 +5,15 @@ from sqlalchemy import select, func
 
 from app.common.core.database import AsyncSessionLocal
 from app.common.notification.models.notification import Notification, NotificationStatus
+from app.common.channel.models.channel import ChannelStatus
 from app.common.user.models.user import User
-from app.common.channels.service.base import NotificationChannelRegistry
+from app.common.channel.service.base import NotificationChannelRegistry
 from app.common.core.metrics import NOTIFICATION_LAG, NOTIFICATIONS_TOTAL, EXTERNAL_API_REQUESTS, NOTIFICATIONS_PENDING, \
     WORKER_PROCESSING_TIME
 from app.common.core.logger import logger
+from app.common.notification.repository.repository import NotificationRepository
+from app.common.user.repository.repository import UserRepository
+from app.common.channel.repository.repository import ChannelRepository
 
 
 async def process_pending_notifications(registry: NotificationChannelRegistry) -> None:
@@ -18,35 +22,20 @@ async def process_pending_notifications(registry: NotificationChannelRegistry) -
         async with AsyncSessionLocal() as session:
             now_utc = datetime.now(timezone.utc)
 
+            repository = NotificationRepository(session=session)
+            user_repository = UserRepository(session=session)
+            channel_repository = ChannelRepository(session=session)
             # подсчет зависших уведомлений, чья очередь наступила
-            pending_count_stmt = (
-                select(func.count(Notification.id))
-                .where(
-                    Notification.status == NotificationStatus.PENDING,
-                    Notification.scheduled_time <= now_utc
-                )
-            )
-            pending_count = (await session.execute(pending_count_stmt)).scalar() or 0
-            NOTIFICATIONS_PENDING.set(pending_count)
 
-            stmt = (
-                select(Notification)
-                .where(
-                    Notification.status == NotificationStatus.PENDING,
-                    Notification.scheduled_time <= now_utc
-                )
-                .limit(100)
-                .with_for_update(skip_locked=True)
-            )
-            result = await session.execute(stmt)
-            notifications = result.scalars().all()
+            pending_count = await repository.get_pending_notifications_count(now_utc)
+            NOTIFICATIONS_PENDING.set(pending_count)
+            notifications = await repository.get_pending_notifications_for_worker(now_utc)
 
             if not notifications:
                 return
 
             for notification in notifications:
-                notification.status = NotificationStatus.PROCESSING
-                await session.commit()
+                await repository.change_status(notification, NotificationStatus.PROCESSING)
 
                 # ИСПРАВЛЕНИЕ: Вычисляем lag до того, как использовать его в логах
                 now_utc = datetime.now(timezone.utc)
@@ -64,15 +53,14 @@ async def process_pending_notifications(registry: NotificationChannelRegistry) -
                 logger.info("Notification  updated to PROCESSING", extra=log_context)
 
                 try:
+                    delivery_channel = await channel_repository.get_by_user_id(notification.user_id, notification.channel)
                     channel = registry.get(notification.channel)
-                    stmt = select(User).where(User.id == notification.user_id)
-                    result = await session.execute(stmt)
-                    user = result.scalar_one_or_none()
+
                     await channel.send(
-                        recipient_id=user.telegram_id,
+                        channel_address=delivery_channel.address,
                         message_text=notification.message_text
                     )
-                    notification.status = NotificationStatus.SENT
+                    await repository.change_status(notification, NotificationStatus.SENT)
 
                     # Записываем метрику задержки
                     NOTIFICATION_LAG.observe(max(0.0, lag))

@@ -1,7 +1,8 @@
 from aiogram import Bot
-from app.common.channels.service.base import BaseNotificationChannel
+from app.common.channel.service.base import BaseNotificationChannel
 from aiogram.client.session.aiohttp import AiohttpSession
 from app.common.config import settings
+from app.common.channel.models.channel import ChannelStatus
 
 
 class TelegramNotificationChannel(BaseNotificationChannel):
@@ -10,10 +11,10 @@ class TelegramNotificationChannel(BaseNotificationChannel):
 
     @property
     def channel_name(self) -> str:
-        return "telegram"
+        return ChannelStatus.TELEGRAM
 
-    async def send(self, recipient_id: int, message_text: str) -> None:
-        await self.bot.send_message(chat_id=recipient_id, text=message_text)
+    async def send(self, channel_address: str, message_text: str) -> None:
+        await self.bot.send_message(chat_id=int(channel_address), text=message_text)
 
     async def close(self) -> None:
         await self.bot.session.close()
