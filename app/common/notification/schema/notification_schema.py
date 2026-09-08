@@ -2,9 +2,11 @@ from datetime import datetime
 from uuid import UUID
 from pydantic import BaseModel, Field, field_validator
 
+from app.common.channel.models.channel import ChannelStatus
+
 
 class ScheduleNotificationRequest(BaseModel):
-    user_id: int = Field(..., description="Telegram ID пользователя")
+    channel_address: str = Field(..., description="Адрес канала отправки сообщения")
     scheduled_time: datetime = Field(..., description="время отправки (yyyy:mm:dd, hh:mm:ss)")
     message_text: str = Field(..., min_length=1, max_length=4096)
     channel: str = Field(..., min_length=1, max_length=100)
@@ -28,7 +30,7 @@ class NotificationResponse(BaseModel):
     message_text: str
     scheduled_time: datetime
     status: str
-    channel: str
+    channel: ChannelStatus
     created_at: datetime
 
     class Config:

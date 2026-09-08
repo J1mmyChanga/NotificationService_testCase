@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.common.channel.models.channel import ChannelStatus
 from app.common.notification.schema.notification_schema import NotificationResponse, ScheduleNotificationRequest
 from app.common.core.logger import logger
 from app.common.core.database import get_db
@@ -20,7 +21,7 @@ async def schedule_notification(
     db: AsyncSession = Depends(get_db)
 ):
     log_context = {
-        "user_id": str(payload.user_id),
+        "channel_address": str(payload.channel_address),
         "channel": payload.channel,
         "scheduled_time": payload.scheduled_time.isoformat(),
         "service": "api"
@@ -28,12 +29,15 @@ async def schedule_notification(
 
     logger.info("Received request to create notification", extra=log_context)
     try:
+        channel = ChannelStatus[payload.channel]
+        if channel not in list(ChannelStatus):
+            raise ValueError
         notification = await create_notification(
             session=db,
-            telegram_id=payload.user_id,
+            channel_address=str(payload.channel_address),
             scheduled_time=payload.scheduled_time,
             message_text=payload.message_text,
-            channel=payload.channel
+            channel=channel
         )
         return notification
     except ValueError as e:

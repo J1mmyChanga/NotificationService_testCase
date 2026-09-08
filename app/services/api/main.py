@@ -1,5 +1,8 @@
 from fastapi import FastAPI
 from app.common.notification.handlers.notification_route import router as api_router
+from app.common.user.models.user import User
+from app.common.channel.models.deliverychannel import DeliveryChannel
+from app.common.notification.models.notification import Notification
 
 app = FastAPI(
     title="Notification Service API",
@@ -16,4 +19,4 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.services.api.main:app", host="0.0.0.0", port=8000, reload=True)

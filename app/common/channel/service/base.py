@@ -9,7 +9,7 @@ class BaseNotificationChannel(ABC):
         pass
 
     @abstractmethod
-    async def send(self, recipient_id: int, message_text: str) -> None:
+    async def send(self, channel_address: int, message_text: str) -> None:
         pass
 
 
