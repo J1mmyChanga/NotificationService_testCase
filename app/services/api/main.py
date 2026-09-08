@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.routes import router as api_router
+from app.common.notification.handlers.notification_route import router as api_router
 
 app = FastAPI(
     title="Notification Service API",

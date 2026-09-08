@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from sqlalchemy import BigInteger, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.models.base import Base
+from app.common.models.base import Base
 
 class User(Base):
     __tablename__ = "users"

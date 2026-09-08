@@ -1,30 +1,35 @@
 from datetime import datetime
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.logger import logger
-from app.models import Notification, NotificationStatus, User
+from app.common.core.logger import logger
+from app.common.notification.models.notification import Notification
+from app.common.notification.repository.repository import NotificationRepository
+from app.common.user.repository.repository import UserRepository
 
 
-async def create_notification(session: AsyncSession, telegram_id: int, scheduled_time: datetime,
-                              message_text: str, channel: str) -> Notification:
-    stmt = select(User).where(User.telegram_id == telegram_id)
-    result = await session.execute(stmt)
-    user = result.scalar_one_or_none()
+async def create_notification(
+    session: AsyncSession,
+    telegram_id: int,
+    scheduled_time: datetime,
+    message_text: str,
+    channel: str
+) -> Notification:
+    
+    repository = NotificationRepository(session=session)
+    user_repository = UserRepository(session=session)
+
+    user = await user_repository.get_by_telegram_id(session, telegram_id)
 
     if not user:
         raise ValueError(f"User with telegram_id={telegram_id} is not found")
 
-    notification = Notification(
+    notification = await repository.create(
+        session=session,
         user_id=user.id,
         scheduled_time=scheduled_time,
         message_text=message_text,
-        status=NotificationStatus.PENDING,
         channel=channel
     )
-    session.add(notification)
-    await session.commit()
-    await session.refresh(notification)
 
     log_context = {
         "notification_id": str(notification.id),

@@ -3,7 +3,7 @@ import enum
 from datetime import datetime, timezone
 from sqlalchemy import String, Text, DateTime, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.models.base import Base
+from app.common.models.base import Base
 
 
 class NotificationStatus(str, enum.Enum):

@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.schemas import NotificationResponse, ScheduleNotificationRequest
-from app.core.logger import logger
-from app.core.database import get_db
-from app.services.create_notification import create_notification
+from app.common.notification.schema.notification_schema import NotificationResponse, ScheduleNotificationRequest
+from app.common.core.logger import logger
+from app.common.core.database import get_db
+from app.common.notification.service.create_notification import create_notification
 
 router = APIRouter(prefix="/api/v1")
 

@@ -1,12 +1,12 @@
 import asyncio
 import os
-from app.channels.base import NotificationChannelRegistry
-from app.channels.telegram import TelegramNotificationChannel
-from app.worker.scheduler import run_scheduler
-from app.config import settings
+from app.common.channels.service.base import NotificationChannelRegistry
+from app.common.channels.service.telegram import TelegramNotificationChannel
+from app.common.notification.service.scheduler import run_scheduler
+from app.common.config import settings
 
-from app.core.metrics import start_metrics_server
-from app.core.logger import logger
+from app.common.core.metrics import start_metrics_server
+from app.common.core.logger import logger
 
 
 async def main():

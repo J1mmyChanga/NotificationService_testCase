@@ -1,7 +1,7 @@
 from aiogram import Bot
-from app.channels.base import BaseNotificationChannel
+from app.common.channels.service.base import BaseNotificationChannel
 from aiogram.client.session.aiohttp import AiohttpSession
-from app.config import settings
+from app.common.config import settings
 
 
 class TelegramNotificationChannel(BaseNotificationChannel):

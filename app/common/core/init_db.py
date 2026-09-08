@@ -3,8 +3,10 @@ import logging
 import sys
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.config import settings
-from app.models import Base, User, Notification
+from app.common.config import settings
+from app.common.models import Base
+from app.common.user.models.user import User
+from app.common.notification.models.notification import Notification
 
 logging.basicConfig(
     level=logging.INFO,

@@ -4,9 +4,9 @@ from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.client.session.aiohttp import AiohttpSession
-from app.config import settings
+from app.common.config import settings
 
-from app.bot.handlers import router
+from app.common.user.handlers.create_user_handler import router
 
 
 async def run_bot() -> None:

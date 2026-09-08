@@ -2,8 +2,8 @@ from aiogram import Router
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from app.core.database import AsyncSessionLocal
-from app.services.get_or_create_user import get_or_create_user
+from app.common.core.database import AsyncSessionLocal
+from app.common.user.repository.repository import UserRepository
 
 router = Router()
 
@@ -12,9 +12,10 @@ async def cmd_start_handler(message: Message) -> None:
     telegram_id = message.from_user.id
 
     async with AsyncSessionLocal() as session:
-        user, created = await get_or_create_user(session, telegram_id)
-
-    if created:
+        repository = UserRepository(session=session)
+        user = repository.get_by_telegram_id(telegram_id)
+    if not user:
+        repository.create(telegram_id=telegram_id)
         await message.answer(
             f"Привет, {message.from_user.first_name}!\n"
             f"Вы успешно зарегистрированы в системе отложенных напоминаний.\n"

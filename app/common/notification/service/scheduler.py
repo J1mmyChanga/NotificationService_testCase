@@ -3,12 +3,13 @@ import logging
 from datetime import datetime, timezone
 from sqlalchemy import select, func
 
-from app.core.database import AsyncSessionLocal
-from app.models import User, Notification, NotificationStatus
-from app.channels.base import NotificationChannelRegistry
-from app.core.metrics import NOTIFICATION_LAG, NOTIFICATIONS_TOTAL, EXTERNAL_API_REQUESTS, NOTIFICATIONS_PENDING, \
+from app.common.core.database import AsyncSessionLocal
+from app.common.notification.models.notification import Notification, NotificationStatus
+from app.common.user.models.user import User
+from app.common.channels.service.base import NotificationChannelRegistry
+from app.common.core.metrics import NOTIFICATION_LAG, NOTIFICATIONS_TOTAL, EXTERNAL_API_REQUESTS, NOTIFICATIONS_PENDING, \
     WORKER_PROCESSING_TIME
-from app.core.logger import logger
+from app.common.core.logger import logger
 
 
 async def process_pending_notifications(registry: NotificationChannelRegistry) -> None:
