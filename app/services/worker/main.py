@@ -16,23 +16,22 @@ from app.common.core.logger import logger
 
 async def main():
     start_metrics_server(port=8002)
-    logger.info("Worker service starting up", extra={"service": "worker"})
+    logger.info("Worker service starting up")
 
     registry = NotificationChannelRegistry()
     tg_channel = TelegramNotificationChannel(bot_token=settings.BOT_TOKEN)
     registry.register(tg_channel)
 
     try:
-        logger.info("Scheduler started successfully", extra={"service": "worker"})
+        logger.info("Scheduler started successfully")
         await run_scheduler(registry, poll_interval=1.0)
     except Exception as e:
         logger.critical(
             f"Worker crashed with error: {e}",
-            exc_info=True,
-            extra={"service": "worker"}
+            exc_info=True
         )
     finally:
-        logger.info("Shutting down worker and closing connections...", extra={"service": "worker"})
+        logger.info("Shutting down worker and closing connections...")
         await tg_channel.close()
 
 

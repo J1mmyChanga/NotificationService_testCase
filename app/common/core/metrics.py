@@ -27,12 +27,11 @@ EXTERNAL_API_REQUESTS = Counter(
     ["target", "status_code"]
 )
 
-# EXTERNAL_API_RETRIES = Counter( ###
-#     "external_api_retries_total",
-#     "Количество повторных попыток запросов к внешним API",
-#     ["target"]
-# )
-
+WORKER_SUCCEEDED_TO_TOTAl = Counter(
+    "worker_succeeded_to_total",
+    "Отношение выполненных воркером задач ко взятым",
+    ["state"]
+)
 
 def start_metrics_server(port: int = 8002):
     try:

@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.channel.models.channel import ChannelStatus
 from app.common.notification.schema.notification_schema import NotificationResponse, ScheduleNotificationRequest
-from app.common.core.logger import logger
+from app.common.core.logger import logger, log_context
 from app.common.core.database import get_db
 from app.common.notification.service.create_notification import create_notification
 
@@ -20,14 +20,13 @@ async def schedule_notification(
     payload: ScheduleNotificationRequest,
     db: AsyncSession = Depends(get_db)
 ):
-    log_context = {
-        "channel_address": str(payload.channel_address),
-        "channel": payload.channel,
-        "scheduled_time": payload.scheduled_time.isoformat(),
-        "service": "api"
-    }
-
-    logger.info("Received request to create notification", extra=log_context)
+    with log_context(
+        service="api",
+        channel_address=str(payload.channel_address),
+        channel=payload.channel,
+        scheduled_time=payload.scheduled_time.isoformat()
+    ):
+        logger.info("Received request to create notification")
     try:
         channel = ChannelStatus[payload.channel]
         if channel not in list(ChannelStatus):
